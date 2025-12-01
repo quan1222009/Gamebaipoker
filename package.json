@@ -1,7 +1,7 @@
 {
-  "name": "f-card-game",
+  "name": "f-card-full",
   "version": "1.0.0",
-  "description": "F-Card Game Online/Offline Prototype with MongoDB",
+  "description": "Full F-Card Game: Sâm, Tiến Lên, Uno, Nói Dối",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
