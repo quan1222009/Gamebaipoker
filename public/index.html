@@ -2,18 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>F-Card 3D</title>
-<style>
-  body { margin:0; overflow:hidden; }
-  canvas { display:block; }
-</style>
+<title>F-Card 3D Full Game</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- Load Three.js từ CDN -->
+<div id="menu">
+    <div id="logo">F-CARD 3D</div>
+    <button onclick="showLogin()">Đăng Nhập / Đăng Ký</button>
+    <button onclick="startOffline()">Chơi Offline</button>
+    <button onclick="startOnline()">Chơi Online</button>
+    <button onclick="showFriends()">Kết bạn</button>
+</div>
+
+<div id="gameContainer" style="display:none;">
+    <!-- Three.js canvas sẽ append ở đây -->
+</div>
+
+<!-- Three.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-<!-- Load Socket.io -->
+<!-- Socket.io -->
 <script src="/socket.io/socket.io.js"></script>
-<!-- Load game3d -->
+<!-- Game logic -->
 <script src="game3d.js"></script>
 </body>
 </html>
