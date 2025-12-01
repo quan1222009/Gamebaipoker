@@ -37,14 +37,12 @@ app.post('/login', async (req,res)=>{
     res.json({id: user.id, username: user.username, friends: user.friends});
 });
 
-// API lấy bạn bè
 app.get('/friends/:id', async (req,res)=>{
     const user = await User.findOne({id: req.params.id});
     if(!user) return res.status(404).json({error:'User không tồn tại'});
     res.json(user.friends);
 });
 
-// API thêm bạn
 app.post('/addFriend', async (req,res)=>{
     const {id, friendID} = req.body;
     const user = await User.findOne({id});
@@ -78,9 +76,8 @@ io.on('connection', socket=>{
     socket.on('sendMove', ({room, move})=>{
         const gameLogic = rooms[room]?.logic;
         if(!gameLogic) return;
-        const valid = gameLogic.validMove(/* params theo game type */);
+        const valid = gameLogic.validMove([], rooms[room].table, move);
         if(valid){
-            // cập nhật table và broadcast
             rooms[room].table.push(move);
             io.to(room).emit('opponentMove', move);
         } else {
@@ -90,13 +87,11 @@ io.on('connection', socket=>{
 
     socket.on('disconnect', ()=>{
         console.log('Client disconnected:', socket.id);
-        // loại bỏ player khỏi room
         for(let r in rooms){
             rooms[r].players = rooms[r].players.filter(p=>p.id!==socket.id);
         }
     });
 });
 
-// --- Start server ---
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, ()=>console.log(`Server running on port ${PORT}`));
