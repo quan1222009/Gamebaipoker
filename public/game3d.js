@@ -1,8 +1,7 @@
-import * as THREE from 'three';
-import { io } from "socket.io-client";
-
+// Không import, dùng THREE từ CDN
 const socket = io();
 
+// Scene, camera, renderer
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 let renderer = new THREE.WebGLRenderer({antialias:true});
@@ -87,6 +86,7 @@ window.addEventListener('mousedown',onMouseDown);
 window.addEventListener('mousemove',onMouseMove);
 window.addEventListener('mouseup',onMouseUp);
 
+// Nhận move đối phương
 socket.on('opponentMove',move=>{
     console.log("Đối phương đánh:", move);
 });
