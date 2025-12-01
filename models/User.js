@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-    username: { type: String, required: true },
-    id: { type: String, required: true, unique: true },
-    friends: [String],
+const UserSchema = new mongoose.Schema({
+    username: {type:String, required:true, unique:true},
+    password: {type:String, required:true},
+    friends: [{type:mongoose.Schema.Types.ObjectId, ref:'User'}],
     stats: {
-        gamesPlayed: { type: Number, default:0 },
-        gamesWon: { type: Number, default:0 }
+        gamesPlayed: {type:Number, default:0},
+        wins: {type:Number, default:0}
     }
-}, {timestamps:true});
+});
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', UserSchema);
