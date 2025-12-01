@@ -5,9 +5,9 @@ const userSchema = new mongoose.Schema({
     id: { type: String, required: true, unique: true },
     friends: [String],
     stats: {
-        gamesPlayed: { type: Number, default: 0 },
-        gamesWon: { type: Number, default: 0 }
+        gamesPlayed: { type: Number, default:0 },
+        gamesWon: { type: Number, default:0 }
     }
-}, { timestamps: true });
+}, {timestamps:true});
 
 module.exports = mongoose.model('User', userSchema);
