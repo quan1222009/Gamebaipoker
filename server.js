@@ -1,11 +1,15 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const mongoose = require('mongoose');
 const path = require('path');
 const User = require('./models/User');
+const sam = require('./logic/sam');
+const tienlen = require('./logic/tienlen');
+const uno = require('./logic/uno');
+const cheat = require('./logic/cheat');
 
 const app = express();
 const server = http.createServer(app);
@@ -18,28 +22,29 @@ app.use(express.static(path.join(__dirname,'public')));
 // --- Connect MongoDB ---
 const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI, { useNewUrlParser:true, useUnifiedTopology:true })
-.then(()=>console.log("MongoDB connected!"))
-.catch(err=>console.log("MongoDB connection error:", err));
+.then(()=>console.log("MongoDB connected"))
+.catch(err=>console.log("MongoDB error:", err));
 
-// --- REST API ---
+// --- API đăng nhập / đăng ký ---
 app.post('/login', async (req,res)=>{
     const {username} = req.body;
     if(!username) return res.status(400).json({error:'Chưa nhập username'});
     const id = username.toLowerCase();
     let user = await User.findOne({id});
     if(!user){
-        user = await User.create({username, id, friends:[]});
+        user = await User.create({username, id, friends:[], stats:{gamesPlayed:0,gamesWon:0}});
     }
-    res.json(user);
+    res.json({id: user.id, username: user.username, friends: user.friends});
 });
 
+// API lấy bạn bè
 app.get('/friends/:id', async (req,res)=>{
-    const {id} = req.params;
-    const user = await User.findOne({id});
+    const user = await User.findOne({id: req.params.id});
     if(!user) return res.status(404).json({error:'User không tồn tại'});
     res.json(user.friends);
 });
 
+// API thêm bạn
 app.post('/addFriend', async (req,res)=>{
     const {id, friendID} = req.body;
     const user = await User.findOne({id});
@@ -49,7 +54,7 @@ app.post('/addFriend', async (req,res)=>{
         user.friends.push(friendID);
         await user.save();
     }
-    res.json({success:true});
+    res.json({success:true, friends: user.friends});
 });
 
 // --- Socket.io rooms ---
@@ -57,19 +62,38 @@ let rooms = {};
 io.on('connection', socket=>{
     console.log('Client connected:', socket.id);
 
-    socket.on('joinRoom', ({room, username})=>{
+    socket.on('createRoom', ({room, username, gameType})=>{
         socket.join(room);
-        if(!rooms[room]) rooms[room] = {players:[], table:[], turn:0};
+        if(!rooms[room]){
+            rooms[room] = {players:[], table:[], turn:0, gameType, logic:null};
+            if(gameType==='sam') rooms[room].logic = sam;
+            else if(gameType==='tienlen') rooms[room].logic = tienlen;
+            else if(gameType==='uno') rooms[room].logic = uno;
+            else if(gameType==='cheat') rooms[room].logic = cheat;
+        }
         rooms[room].players.push({id:socket.id, username, hand:[]});
         io.to(room).emit('message', `${username} đã vào phòng`);
     });
 
     socket.on('sendMove', ({room, move})=>{
-        io.to(room).emit('opponentMove', move);
+        const gameLogic = rooms[room]?.logic;
+        if(!gameLogic) return;
+        const valid = gameLogic.validMove(/* params theo game type */);
+        if(valid){
+            // cập nhật table và broadcast
+            rooms[room].table.push(move);
+            io.to(room).emit('opponentMove', move);
+        } else {
+            socket.emit('invalidMove');
+        }
     });
 
     socket.on('disconnect', ()=>{
         console.log('Client disconnected:', socket.id);
+        // loại bỏ player khỏi room
+        for(let r in rooms){
+            rooms[r].players = rooms[r].players.filter(p=>p.id!==socket.id);
+        }
     });
 });
 
