@@ -5,9 +5,15 @@
 <title>F-Card 3D</title>
 <style>
   body { margin:0; overflow:hidden; }
+  canvas { display:block; }
 </style>
 </head>
 <body>
-<script type="module" src="game3d.js"></script>
+<!-- Load Three.js từ CDN -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+<!-- Load Socket.io -->
+<script src="/socket.io/socket.io.js"></script>
+<!-- Load game3d -->
+<script src="game3d.js"></script>
 </body>
 </html>
