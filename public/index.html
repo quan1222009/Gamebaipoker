@@ -1,25 +1,13 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>F-Card Full Game</title>
-<link rel="stylesheet" href="style.css">
+<title>F-Card 3D</title>
+<style>
+  body { margin:0; overflow:hidden; }
+</style>
 </head>
 <body>
-
-<div id="game-container">
-    <div id="table-area">Bàn chơi</div>
-    <div id="player-hand"></div>
-    <div id="controls">
-        <button onclick="sortHand()">Sắp xếp bài</button>
-        <button onclick="playSelected()">Đánh bài</button>
-        <button onclick="passTurn()">Bỏ lượt</button>
-    </div>
-    <div id="status"></div>
-</div>
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="game.js"></script>
+<script type="module" src="game3d.js"></script>
 </body>
 </html>
