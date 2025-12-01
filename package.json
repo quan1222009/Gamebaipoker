@@ -1,7 +1,7 @@
 {
   "name": "f-card-3d-full",
   "version": "1.0.0",
-  "description": "Full F-Card Game 3D: Sâm, Tiến Lên, Uno, Nói Dối",
+  "description": "Full 3D Card Game: Sâm, Tiến Lên, Uno, Nói Dối",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
