@@ -1,7 +1,7 @@
 {
-  "name": "f-card-full",
+  "name": "f-card-3d-full",
   "version": "1.0.0",
-  "description": "Full F-Card Game: Sâm, Tiến Lên, Uno, Nói Dối",
+  "description": "Full F-Card Game 3D: Sâm, Tiến Lên, Uno, Nói Dối",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -11,6 +11,7 @@
     "socket.io": "^4.7.2",
     "mongoose": "^7.6.1",
     "body-parser": "^1.20.2",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "three": "^0.158.0"
   }
 }
